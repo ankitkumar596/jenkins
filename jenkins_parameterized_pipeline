@@ -1,0 +1,58 @@
+pipeline {
+    agent any
+    
+    parameters {
+        string defaultValue: 'Darin', description: 'Who should I say hello to?', name: 'PERSON', trim: true
+        string defaultValue: 'NO', description: 'Deploy to Dev? (YES/NO)', name: 'DEPLOY_DEV', trim: true
+        string defaultValue: 'NO', description: 'Deploy to PROD? (YES/NO)', name: 'DEPLOY_PROD', trim: true
+    }
+
+    stages {
+        stage('Build') {
+            steps {
+                sh 'echo Building the code.......'
+            }
+        }
+        stage('Hello') {
+            steps {
+                sh "echo Hello ${params.PERSON}"
+            }
+        }
+        stage('Deploying to Dev') {
+            steps {
+                script {
+                    echo "Value of DEPLOY_DEV: ${params['DEPLOY_DEV']}"
+                        when {
+                            expression {
+                                return env.DEPLOY_DEV = 'YES';
+        
+                            }  
+                        }
+                        sh'''
+                        echo "Deploying in Dev ${params['DEPLOY_DEV']}"
+                        echo "Deployment to Dev is successful!"
+                        '''
+                    } else {
+                        echo "Skipping deployment to Dev."
+                    }
+                }
+            }
+        }
+
+        stage('Deploying to Production') {
+            steps {
+                script {
+                    echo "Value of DEPLOY_PROD: ${params['DEPLOY_PROD']}"
+                    if (params['DEPLOY_PROD'] == 'YES') {
+                        sh'''
+                        echo "Deploying in Production ${params['DEPLOY_PROD']}"
+                        echo "Deployment to Production is successful!"
+                        '''
+                    } else {
+                        echo "Skipping deployment to Production."
+                    }
+                }
+            }
+        }
+    }
+}
