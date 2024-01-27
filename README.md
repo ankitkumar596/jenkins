@@ -13,11 +13,11 @@ jenkins --version
 Disable Jenkins Security
 
 sudo vi /var/lib/jenkins/config.xml 
-
+bash '''
 Modify the value between the <useSecurity> tags and set the value to false. <useSecurity>true</useSecurity> to <useSecurity>false</useSecurity> 
 
 sudo systemctl restart jenkins
-
+'''
 # Reset Jenkins Admin’s Password
 Click on People on the left-hand navigation menu.
 Click on the Admin.
